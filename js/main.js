@@ -6,6 +6,7 @@ const numbers = document.querySelectorAll(".calculator__buttons .calculator__num
 const operators = document.querySelectorAll(".calculator__buttons .calculator__operator"); // Кнопки с операторами
 const output = document.querySelector(".calculator__screen-output"); // Поле вывода результата
 const dotBtn = document.querySelector(".calculator__dot");
+const dotClick = document.querySelector(".calculator__dot").addEventListener("click", dotClicked);
 let numberStr = "";
 let mainStr = "";
 let mainArr = [];
@@ -23,6 +24,12 @@ for(let i = 0; i < calculatorButtons.length; i++){
 		}, 350);
 	}
 }
+
+function dotClicked(){
+	dotBtn.setAttribute("disabled", "");
+}
+
+
 function numberClick(){
 	for(let i = 0; i < numbers.length; i++){
 		numbers[i].addEventListener('click', numberAction);
@@ -45,15 +52,17 @@ function numberAction(){
 		output.value  = mainStr;
 		console.log(mainArr);
 	}
+
 }
 function operatorAction(){
-	if(operatorFlag === false){
+	if(mainArr.length % 2 !== 0){
 		numberFlag = false;
 		operatorFlag = true;
 		mainArr.push(this.value);
 		console.log(mainArr);
 		mainStr = mainArr.join("");
 		output.value  = mainStr;
+		dotBtn.removeAttribute("disabled", "");
 	}else{
 		mainArr.pop();
 		mainArr.push(this.value);
@@ -61,6 +70,7 @@ function operatorAction(){
 		console.log(mainArr);
 		mainStr = mainArr.join("");
 		output.value  = mainStr;
+		dotBtn.removeAttribute("disabled", "");
 	}
 
 }
@@ -81,30 +91,40 @@ function removeLastElem(){
 	output.value  = mainStr;
 	console.log(mainArr);
 }
+
 function calculateTotal(){
-	for(i = 0; i < mainArr.length; i++){
-		if((mainArr[i] === "*") || mainArr[i] === "/"){
-			if(mainArr[i] === "*"){
-				a = mainArr[mainArr.indexOf(mainArr[i]) - 1];
-				b = mainArr[mainArr.indexOf(mainArr[i]) + 1];
-				(mainArr[mainArr.indexOf(mainArr[i]) - 1]) = a * b;
-				mainArr.splice((mainArr.indexOf(mainArr[i]) + 1), 1);
-				mainArr.splice((mainArr.indexOf(mainArr[i])), 1);
-				console.log(mainArr)
-			}else{
-				a = mainArr[mainArr.indexOf(mainArr[i]) - 1];
-				b = mainArr[mainArr.indexOf(mainArr[i]) + 1];
-				mainArr[mainArr.indexOf(mainArr[i]) - 1] = a / b;
-				mainArr.splice((mainArr.indexOf(mainArr[i]) + 1), 1);
-				mainArr.splice((mainArr.indexOf(mainArr[i])), 1);
-				console.log(mainArr)
+	if(mainArr.length % 2 !== 0){
+		for(i = 0; i < mainArr.length; i++){
+			if((mainArr[i] === "*") || mainArr[i] === "/"){
+				if(mainArr[i] === "*"){
+					a = mainArr[mainArr.indexOf(mainArr[i]) - 1];
+					b = mainArr[mainArr.indexOf(mainArr[i]) + 1];
+					(mainArr[mainArr.indexOf(mainArr[i]) - 1]) = a * b;
+					mainArr.splice((mainArr.indexOf(mainArr[i]) + 1), 1);
+					mainArr.splice((mainArr.indexOf(mainArr[i])), 1);
+					console.log(mainArr);
+				}else{
+					a = mainArr[mainArr.indexOf(mainArr[i]) - 1];
+					b = mainArr[mainArr.indexOf(mainArr[i]) + 1];
+					mainArr[mainArr.indexOf(mainArr[i]) - 1] = a / b;
+					mainArr.splice((mainArr.indexOf(mainArr[i]) + 1), 1);
+					mainArr.splice((mainArr.indexOf(mainArr[i])), 1);
+					console.log(mainArr)
 			}
 		}
 	}
-	
 	mainStr = mainArr.join('');
-	output.value  = eval(mainStr);
+	mainArr = [];
+	mainArr.push(eval(mainStr));
+	mainStr = mainArr.join('');
+	output.value  = mainStr;
+	console.log(eval(mainArr));
 	console.log(eval(mainStr));
+	}else{
+		alert('The example is not complete')
+	}
+	
+
 }
 
 numberClick();
